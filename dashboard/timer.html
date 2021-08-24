@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="./modules.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <style>
+        #main {
+            display: inline-block;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+        }
+
+        #timerDiv {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            width: 362px;
+            height: 48px;
+            background-color: #1E1E1E;
+            border-radius: 4px;
+            padding: 0px 12px;
+            box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)
+        }
+
+        #timerText {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 25px;
+            width: 346px;
+            height: 48px;
+            line-height: 48px;
+        }
+
+        #buttonDiv {
+            text-align: center;
+        }
+
+        paper-button.button {
+            margin-top: 10px;
+            width: 100px;
+            height: 36px;
+            font-size: 14px;
+            letter-spacing: .0892857143em;
+            background-color: #272727;
+            --paper-button-ink-color: #6A6A6A;
+            text-align: center;
+        }
+
+        paper-button.button:hover {
+            background-color: #383838;
+        }
+
+        paper-button.button[disabled] {
+            background-color: #485264;
+        }
+    </style>
+    <script>
+        const timer = nodecg.Replicant('timer');
+        const startDate = nodecg.Replicant('startDate');
+        let timerReset = false;
+
+        NodeCG.waitForReplicants(timer, startDate).then(() => {
+            timer.on('change', (newVal) => {
+                if (newVal.active) {
+                    document.getElementById('playButton').disabled = true;
+                    document.getElementById('resetButton').disabled = false;
+                }
+                else {
+                    document.getElementById('playButton').disabled = false;
+                    document.getElementById('resetButton').disabled = true;
+                }
+                if (!timerReset)
+                    document.getElementById('timerText').innerHTML = newVal.time
+            })
+        });
+
+        function startTimer() {
+            timerReset = false;
+            startDate.value = Date.now() - 1000;
+            timer.value.active = true;
+        }
+
+        function resetTimer() {
+            timerReset = true;
+            setTimeout(() => timer.value.time = '00:00:00:00', 1000);
+            document.getElementById('timerText').innerHTML = '00:00:00:00'
+            timer.value.active = false;
+            startDate.value = undefined;
+        }
+    </script>
+    <div id="main">
+        <div id="timerDiv">
+            <div id="timerText">00:00:00:00</div>
+        </div>
+        <div id="buttonDiv">
+            <paper-button raised class="button" id="playButton" onclick="startTimer()">
+                <iron-icon id="buttonIcon" icon="av:play-arrow"></iron-icon>
+            </paper-button>
+            <paper-button raised class="button" id="resetButton">
+                <iron-icon id="buttonIcon" icon="av:fast-rewind" onclick="resetTimer()"></iron-icon>
+            </paper-button>
+        </div>
+    </div>
+</body>
+
+</html>

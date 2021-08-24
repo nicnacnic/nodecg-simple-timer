@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <style>
+        #timer {
+            font-family: 'Times New Roman', Times, serif;
+            width: 600px;
+            height: 140px;
+            text-align: center;
+            vertical-align: middle;
+            color: #000000;
+            font-size: 120px;
+        }
+    </style>
+    <script>
+        const timer = nodecg.Replicant('timer');
+
+        NodeCG.waitForReplicants(timer).then(() => {
+            timer.on('change', (newVal) => {
+                document.getElementById('timer').innerHTML = newVal.time;
+
+                if (!newVal.active)
+                    document.getElementById('timer').innerHTML = '00:00:00:00'
+            })
+        })
+    </script>
+    <div id="timer">
+    </div>
+</body>
+
+</html>
